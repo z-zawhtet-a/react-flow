@@ -3,9 +3,20 @@ import { OnConnect, Connection } from './general';
 
 export type HandleType = 'source' | 'target';
 
+export type DataType = 'scalar' | 'vector' | 'string' | 'Tensor1D' | 'Tensor2D' | 'Tensor3D' | 'Tensor4D';
+
 export interface HandleElement extends XYPosition, Dimensions {
   id?: string | null;
   position: Position;
+  dataType?: DataType;
+  tensorShape?: number[];
+}
+
+export interface HandleData {
+  id?: string | null;
+  position: Position;
+  dataType?: DataType;
+  tensorShape?: number[];
 }
 
 export interface StartHandle {
@@ -21,4 +32,6 @@ export interface HandleProps {
   onConnect?: OnConnect;
   isValidConnection?: (connection: Connection) => boolean;
   id?: string;
+  dataType?: DataType;
+  tensorShape?: number[];
 }

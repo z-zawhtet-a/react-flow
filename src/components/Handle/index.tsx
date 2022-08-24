@@ -30,6 +30,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       children,
       className,
       onMouseDown,
+      dataType,
+      tensorShape = [],
       ...rest
     },
     ref
@@ -107,6 +109,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       <div
         data-handleid={handleId}
         data-nodeid={nodeId}
+        data-data-type={dataType}
+        data-tensor-shape={tensorShape}
         data-handlepos={position}
         className={cc([
           'react-flow__handle',
