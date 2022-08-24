@@ -88,9 +88,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
         if (handleBounds) {
           const { source, target } = handleBounds;
           if (source) {
-            source.forEach((sh, index) => {
+            source.forEach((sh) => {
               const sourceHandle: HandleData = {
-                id: sh.id || `${node.id}-source-${index}`,
+                id: sh.id!,
                 parentId: node.id,
                 parentType: node.type!,
                 type: 'source',
@@ -103,9 +103,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
           }
 
           if (target) {
-            target.forEach((th, index) => {
+            target.forEach((th) => {
               const targetHandle: HandleData = {
-                id: `${node.id}-target-${index}`,
+                id: th.id!,
                 parentId: node.id,
                 parentType: node.type!,
                 type: 'target',

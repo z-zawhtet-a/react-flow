@@ -1,6 +1,5 @@
-import { useState, DragEvent } from 'react';
+import { useState, DragEvent, useEffect } from 'react';
 import ReactFlow, {
-  ReactFlowProvider,
   addEdge,
   Controls,
   ReactFlowInstance,
@@ -9,6 +8,8 @@ import ReactFlow, {
   Node,
   useNodesState,
   useEdgesState,
+  useStore,
+  HandleData
 } from 'react-flow-renderer';
 
 import Sidebar from './Sidebar';
@@ -29,6 +30,11 @@ const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [pyodide, setPyodide] = useState(null);
+  const sourceHandles = useStore(s => s.sourceHandles);
+  const targetHandles = useStore(s => s.targetHandles);
+  const [candidateSources, setCandidateSources] = useState<HandleData[]>([]);
+  const [candidateTargets, setCandidateTargets] = useState<HandleData[]>([]);
 
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
   const onInit = (rfi: ReactFlowInstance) => setReactFlowInstance(rfi);
@@ -50,25 +56,50 @@ const DnDFlow = () => {
     }
   };
 
+  useEffect(() => {
+    setCandidateSources(
+      sourceHandles.filter(sh => edges.every(e => e.sourceHandle !== sh.id)))
+    setCandidateTargets(
+      targetHandles.filter(th => edges.every(e => e.targetHandle !== th.id)))
+    edges.forEach(edge => console.log('edges: ', edge.sourceHandle, edge.targetHandle));
+  }, [sourceHandles, targetHandles, edges]);
+
+  useEffect(() => {
+    // @ts-expect-error
+    Promise.resolve(loadPyodide())
+      .then(pyodide => setPyodide(pyodide))
+  }, [])
+
+  useEffect(() => {
+    if (pyodide)
+    {
+      // @ts-expect-error
+      Promise.resolve(pyodide.loadPackage(['networkx']))
+    }
+  }, [pyodide])
+
+  useEffect(() => {
+    console.log('candidate sources: ', candidateSources);
+    console.log('candidate targets: ', candidateTargets);
+  }, [candidateSources, candidateTargets])
+
   return (
     <div className="dndflow">
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onEdgesChange={onEdgesChange}
-            onNodesChange={onNodesChange}
-            onConnect={onConnect}
-            onInit={onInit}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-          >
-            <Controls />
-          </ReactFlow>
-        </div>
-        <Sidebar />
-      </ReactFlowProvider>
+      <div className="reactflow-wrapper">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onEdgesChange={onEdgesChange}
+          onNodesChange={onNodesChange}
+          onConnect={onConnect}
+          onInit={onInit}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+        >
+          <Controls />
+        </ReactFlow>
+      </div>
+      <Sidebar />
     </div>
   );
 };

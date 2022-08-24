@@ -30,6 +30,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       children,
       className,
       onMouseDown,
+      cardinality,
       dataType,
       tensorShape = [],
       ...rest
@@ -40,7 +41,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const nodeId = useContext(NodeIdContext) as string;
     const { connectionStartHandle, connectOnClick } = useStore(selector, shallow);
 
-    const handleId = id || null;
+    const index = cardinality || Math.round(Math.random() * 1000);
+    const handleId = id || `${nodeId}-${type}-${index}`;
     const isTarget = type === 'target';
 
     const onConnectExtended = (params: Connection) => {

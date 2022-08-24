@@ -1,6 +1,7 @@
 import { ChangeEvent } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ReactFlowProvider } from 'react-flow-renderer';
 
 import Basic from './Basic';
 import ControlledUncontrolled from './ControlledUncontrolled';
@@ -194,10 +195,12 @@ const root = createRoot(container!);
 root.render(
   <BrowserRouter>
     <Header />
-    <Routes>
-      {routes.map((route) => (
-        <Route path={route.path} key={route.path} element={<route.component />} />
-      ))}
-    </Routes>
+    <ReactFlowProvider>
+      <Routes>
+        {routes.map((route) => (
+          <Route path={route.path} key={route.path} element={<route.component />} />
+        ))}
+      </Routes>
+    </ReactFlowProvider>
   </BrowserRouter>
 );

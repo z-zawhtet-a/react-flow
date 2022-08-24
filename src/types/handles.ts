@@ -8,6 +8,7 @@ export type DataType = 'unknown' | 'scalar' | 'vector' | 'string' | 'Tensor1D' |
 export interface HandleElement extends XYPosition, Dimensions {
   id?: string | null;
   position: Position;
+  cardinality?: number;
   dataType?: DataType;
   tensorShape?: number[];
 }
@@ -30,6 +31,7 @@ export interface StartHandle {
 
 export interface HandleProps {
   type: HandleType;
+  cardinality?: number;
   position: Position;
   isConnectable?: boolean;
   onConnect?: OnConnect;
