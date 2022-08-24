@@ -15,6 +15,7 @@ import {
   NodePositionChange,
   NodeDragItem,
   UnselectNodesAndEdgesParams,
+  HandleData,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -32,6 +33,12 @@ const createStore = () =>
     setEdges: (edges: Edge[]) => {
       const { defaultEdgeOptions = {} } = get();
       set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+    },
+    setSourceHandles: (sourceHandles: HandleData[]) => {
+      set({ sourceHandles });
+    },
+    setTargetHandles: (targetHandles: HandleData[]) => {
+      set({ targetHandles });
     },
     setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
       const hasDefaultNodes = typeof nodes !== 'undefined';

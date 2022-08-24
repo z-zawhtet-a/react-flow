@@ -1,9 +1,10 @@
 import React, { memo, useMemo, ComponentType, useEffect, useRef } from 'react';
 import shallow from 'zustand/shallow';
+import useUpdateNodeInternals from '../../hooks/useUpdateNodeInternals';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
-import { NodeMouseHandler, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
+import { HandleData, NodeMouseHandler, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
 import { internalsSymbol } from '../../utils';
 
 interface NodeRendererProps {
@@ -29,6 +30,11 @@ const selector = (s: ReactFlowState) => ({
 
 const NodeRenderer = (props: NodeRendererProps) => {
   const { nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions } = useStore(selector, shallow);
+  const setSourceHandles = useStore((s) => s.setSourceHandles);
+  const setTargetHandles = useStore((s) => s.setTargetHandles);
+  const updateNodeInternals = useUpdateNodeInternals();
+  const [nodeCount, setNodeCount] = React.useState(0);
+  
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const resizeObserverRef = useRef<ResizeObserver>();
 
@@ -57,6 +63,66 @@ const NodeRenderer = (props: NodeRendererProps) => {
       resizeObserverRef?.current?.disconnect();
     };
   }, []);
+  
+  // drag and drop nodes do not render immediately, so we need to force an update
+  // and set the node count only if all nodes are initialized
+  useEffect(() => {
+    if (!nodes.every(node => node.width && node.height)) {
+      nodes.forEach(node => {
+        if (!node.width || !node.height) {
+          updateNodeInternals(node.id);
+        }
+      })
+    } else if (nodeCount !== nodes.length) {
+      setNodeCount(nodes.length);
+    }
+  }, [nodes]);
+
+  // We care about handles only when the number of nodes changes
+  useEffect(() => {
+    if (nodeCount) {
+      const sourceHandles: HandleData[] = [];
+      const targetHandles: HandleData[] = [];
+      nodes.forEach(node => {
+        const handleBounds = node[internalsSymbol]?.handleBounds;
+        if (handleBounds) {
+          const { source, target } = handleBounds;
+          if (source) {
+            source.forEach((sh, index) => {
+              const sourceHandle: HandleData = {
+                id: sh.id || `${node.id}-source-${index}`,
+                parentId: node.id,
+                parentType: node.type!,
+                type: 'source',
+                position: sh.position,
+                dataType: sh.dataType || 'unknown',
+                tensorShape: sh.tensorShape,
+              }
+              sourceHandles.push(sourceHandle);
+            });
+          }
+
+          if (target) {
+            target.forEach((th, index) => {
+              const targetHandle: HandleData = {
+                id: `${node.id}-target-${index}`,
+                parentId: node.id,
+                parentType: node.type!,
+                type: 'target',
+                position: th.position,
+                dataType: th.dataType || 'unknown',
+                tensorShape: th.tensorShape,
+              }
+              targetHandles.push(targetHandle);
+            });
+          }
+
+          setSourceHandles(sourceHandles);
+          setTargetHandles(targetHandles);
+        }
+      })
+    }
+  }, [nodeCount])
 
   return (
     <div className="react-flow__nodes react-flow__container">

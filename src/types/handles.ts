@@ -3,7 +3,7 @@ import { OnConnect, Connection } from './general';
 
 export type HandleType = 'source' | 'target';
 
-export type DataType = 'scalar' | 'vector' | 'string' | 'Tensor1D' | 'Tensor2D' | 'Tensor3D' | 'Tensor4D';
+export type DataType = 'unknown' | 'scalar' | 'vector' | 'string' | 'Tensor1D' | 'Tensor2D' | 'Tensor3D' | 'Tensor4D';
 
 export interface HandleElement extends XYPosition, Dimensions {
   id?: string | null;
@@ -13,9 +13,12 @@ export interface HandleElement extends XYPosition, Dimensions {
 }
 
 export interface HandleData {
-  id?: string | null;
-  position: Position;
-  dataType?: DataType;
+  id: string;
+  type: HandleType;
+  parentId: string;
+  parentType: string;
+  position?: Position;
+  dataType: DataType;
   tensorShape?: number[];
 }
 
@@ -35,3 +38,4 @@ export interface HandleProps {
   dataType?: DataType;
   tensorShape?: number[];
 }
+

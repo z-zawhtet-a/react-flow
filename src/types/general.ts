@@ -14,7 +14,7 @@ import {
   SelectionDragHandler,
 } from './nodes';
 import { Edge, EdgeProps, WrapEdgeProps } from './edges';
-import { HandleType, StartHandle } from './handles';
+import { HandleData, HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
 import { ReactFlowInstance } from './instance';
 
@@ -139,6 +139,8 @@ export type ReactFlowStore = {
   transform: Transform;
   nodeInternals: NodeInternals;
   edges: Edge[];
+  sourceHandles: HandleData[];
+  targetHandles: HandleData[];
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;
@@ -206,6 +208,8 @@ export type ReactFlowStore = {
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  setSourceHandles: (handles: HandleData[]) => void;
+  setTargetHandles: (handles: HandleData[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePositions: (nodeDragItems: NodeDragItem[], positionChanged: boolean, dragging: boolean) => void;

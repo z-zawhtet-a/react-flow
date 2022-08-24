@@ -11,9 +11,9 @@ const DefaultNode = ({
 }: NodeProps) => {
   return (
     <>
-      <Handle type="target" position={targetPosition} isConnectable={isConnectable} />
+      <Handle type="target" position={targetPosition} isConnectable={isConnectable} dataType='scalar' />
       {data?.label}
-      <Handle type="source" position={sourcePosition} isConnectable={isConnectable} />
+      <Handle type="source" position={sourcePosition} isConnectable={isConnectable} dataType= 'scalar' />
     </>
   );
 };

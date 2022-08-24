@@ -1,7 +1,7 @@
 import { MouseEvent } from 'react';
 import { GetState, SetState } from 'zustand';
 
-import { HandleElement, Node, Position, ReactFlowState, DataType, HandleData } from '../../types';
+import { HandleElement, Node, Position, ReactFlowState, DataType } from '../../types';
 import { getDimensions } from '../../utils';
 
 export const getHandleBounds = (
@@ -29,28 +29,6 @@ export const getHandleBounds = (
       dataType: handle.getAttribute('data-data-type') as unknown as DataType,
       tensorShape: handle.getAttribute('data-tensor-shape') as unknown as number[],
       ...getDimensions(handle),
-    };
-  });
-};
-
-export const getHandles = (
-  selector: string,
-  nodeElement: HTMLDivElement
-): HandleData[] | null => {
-  const handles = nodeElement.querySelectorAll(selector);
-
-  if (!handles || !handles.length) {
-    return null;
-  }
-
-  const handlesArray = Array.from(handles) as HTMLDivElement[];
-
-  return handlesArray.map((handle): HandleData => {
-    return {
-      id: handle.getAttribute('data-handleid'),
-      position: handle.getAttribute('data-handlepos') as unknown as Position,
-      dataType: handle.getAttribute('data-data-type') as unknown as DataType,
-      tensorShape: handle.getAttribute('data-tensor-shape') as unknown as number[],
     };
   });
 };
