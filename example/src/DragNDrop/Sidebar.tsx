@@ -15,8 +15,17 @@ const Sidebar = () => {
       <div className="react-flow__node-default" onDragStart={(event: DragEvent) => onDragStart(event, 'default')} draggable>
         Default Node
       </div>
+      <div className="react-flow__node-default" onDragStart={(event: DragEvent) => onDragStart(event, 'multiInput:input')} draggable>
+        Multi Input Node
+      </div>
       <div className="react-flow__node-output" onDragStart={(event: DragEvent) => onDragStart(event, 'output')} draggable>
         Output Node
+      </div>
+      <div className="react-flow__node-output" onDragStart={(event: DragEvent) => onDragStart(event, 'multiOutput:output')} draggable>
+        Multi Output Node
+      </div>
+      <div className="react-flow__node-default" onDragStart={(event: DragEvent) => onDragStart(event, 'multiInputOutput:default')} draggable>
+        Multi Input Output Node
       </div>
     </aside>
   );
